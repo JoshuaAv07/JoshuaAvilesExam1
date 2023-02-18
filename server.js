@@ -7,34 +7,50 @@ const bcrypt = require('bcrypt');
 const students = [
     {
         "id": 1,
-        "name": "",
-        "career": "",
-        "email": "",
+        "name": "Joshua",
+        "career": "TI",
+        "email": "joshua@email.com",
     },
     {
-        "id": 1,
-        "name": "",
-        "career": "",
-        "email": "",
+        "id": 2,
+        "name": "Derek",
+        "career": "TI",
+        "email": "derek@email.com",
     },
     {
-
+        "id": 3,
+        "name": "Alejandro",
+        "career": "TI",
+        "email": "alex@email.com",
     },
     {
-
+        "id": 4,
+        "name": "Kevin",
+        "career": "TI",
+        "email": "kevin@email.com",
     },
     {
-
-    },
-    {
-
-    },
-    {
-
+        "id": 5,
+        "name": "Gustavo",
+        "career": "TI",
+        "email": "gus@email.com",
     },
 ];
 
-const users = [];
+const users = [
+    {
+        "email": "student2@gmail.com",
+        "pass": "pass"
+    },
+    {
+        "email": "student1@gmail.com",
+        "pass": "pass"
+    },
+    {
+        "email": "student3@gmail.com",
+        "pass": "pass"    
+    },
+];
 
 app.use(cors());
 app.use(bodyParser.json({"limit":"100mb"}));
@@ -45,63 +61,85 @@ app.all("*", function(req, res ,next){
     next();
 });
 
-async function crud(req, res, hash){
-    const { id } = req.params;
-    const { pass } = req.body;
-    const result = db;
-    const protocol = req.originUrl.split('/');
-
-    try {
-        console.log(protocol);
-        if (protocol == "login"){
-            const compare = await bcrypt.compare(pass, result.pass)
-        }
-        else {
-
-        }
-    } 
-    catch (error) {
-        return (error);
-    } 
-    finally {
-
-    }
-}
-
 app.get('/students', async (req, res) => {
     console.log(students);
     res.send(students);
 });
 
-app.get('/student/:id', async (req, res) => {
-    console.log("Test");
+app.get('/students/:id', async (req, res) => {
+    const { id } = req.params
+    for (let i = 0; i <= students.length; i++) {
+        if (students[i].id == id){
+            console.log(students[i]);
+            res.send(students[i]);
+            break
+        }
+    }
 });
 
-app.post('/student', async (req, res) => {
-    console.log("Test");
+app.post('/students', async (req, res) => {
+    //Didn't have time due waiting for the installation of the libraries
+    const { id, name, career, email } = req.body;
+    students.push({
+        "id": id,
+        "name": name,
+        "career": career,
+        "email": email,
+    });
+    console.log(students);
+    res.send(students);
 });
 
-app.put('/student/:id', async (req, res) => {
-    console.log("Test");
+app.put('/students/:id', async (req, res) => {
+    //Didn't have time due waiting for the installation of the libraries
+    const { id } = req.params
+    for (let i = 0; i <= students.length; i++) {
+        if (students[i].id == id){
+            console.log();
+            res.send();
+            break
+        }
+    }
 });
 
-app.delete('/student/:id', async (req, res) => {
-    console.log("Test");
+app.delete('/students/:id', async (req, res) => {
+    const { id } = req.params
+    for (let i = 0; i <= students.length; i++) {
+        if (students[i].id == id){
+            students.splice(i, 0); //Doesn't work and I don't why
+            console.log(students);
+            res.send(students);
+        }
+    }
 });
 
 app.post('/register', async (req, res, hash) => {
-    const { pass } = req.body;
-    const body = req.body
+    const { email, pass } = req.body;
     bcrypt.hash(pass, 10, async function(err, hash){
-        users.push({body, pass});
-        
-        console.log(students);
-        res.send(students);
+        users.push({
+            "email": email,
+            "pass": hash
+        });
+        console.log(users);
+        res.send(users);
     });
 });
 
 app.post('/login', async (req, res) => {
+    const { email, pass } = req.body;
+    for (let i = 0; i <= users.length; i++) {
+        console.log(users[i].email);
+        if (users[i].email == email){
+            var user = users[i].email;
+            var compare = await bcrypt.compare(pass, users[i].pass);
+            break
+        }
+    }
     console.log(users);
+    res.send({
+        "user": user,
+        "login": compare
+    });
 });
 
 const port = 3000;
