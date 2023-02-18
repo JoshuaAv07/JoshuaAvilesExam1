@@ -78,7 +78,6 @@ app.get('/students/:id', async (req, res) => {
 });
 
 app.post('/students', async (req, res) => {
-    //Didn't have time due waiting for the installation of the libraries
     const { id, name, career, email } = req.body;
     students.push({
         "id": id,
@@ -91,12 +90,18 @@ app.post('/students', async (req, res) => {
 });
 
 app.put('/students/:id', async (req, res) => {
-    //Didn't have time due waiting for the installation of the libraries
     const { id } = req.params
+    const { name, career, email } = req.body;
     for (let i = 0; i <= students.length; i++) {
         if (students[i].id == id){
-            console.log();
-            res.send();
+            students.splice(i, 1, {
+                "id": req.body,id,
+                "name": name,
+                "career": career,
+                "email": email,
+            }); //Doesn't work and I don't why
+            console.log(students);
+            res.send(students)
             break
         }
     }
@@ -106,7 +111,7 @@ app.delete('/students/:id', async (req, res) => {
     const { id } = req.params
     for (let i = 0; i <= students.length; i++) {
         if (students[i].id == id){
-            students.splice(i, 0); //Doesn't work and I don't why
+            students.splice(i, 1); 
             console.log(students);
             res.send(students);
         }
